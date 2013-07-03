@@ -1,0 +1,2 @@
+module Resourceful
+end
