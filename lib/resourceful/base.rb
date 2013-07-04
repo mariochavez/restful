@@ -67,8 +67,35 @@ module Resourceful
         self.send "#{class_name.model_name.route_key}_path"
       end
 
-      def respond_with_dual(*resources, &block)
-        respond_with *resources, &block
+      def respond_with_dual(object, options, &block)
+        args = [object, options]
+        set_flash options
+
+        case block.try(:arity)
+        when 2
+          respond_with(*args) do |responder|
+            dummy_responder = Resourceful::DummyResponder.new
+
+            if get_resource_ivar.errors.empty?
+              block.call responder, dummy_responder
+            else
+              block.call dummy_responder, responder
+            end
+          end
+        when 1
+          respond_with *args, &block
+        else
+          options[:location] = block.call if block
+          respond_with *args
+        end
+      end
+
+      def set_flash(options = {})
+        if options.has_key?(:notice)
+          flash[:notice] = options[:notice]
+        elsif options.has_key?(:alert)
+          flash[:alert] = options[:alert]
+        end
       end
 
       def find_resource
