@@ -17,11 +17,11 @@ module Resourceful
 
       protected
       def resource_ivar
-        "@#{class_name.to_s.demodulize.underscore}"
+        "@#{class_name.model_name.element}"
       end
 
       def collection_ivar
-        resource_ivar.pluralize
+        "@#{class_name.model_name.collection}"
       end
 
       def get_resource_ivar
@@ -64,7 +64,7 @@ module Resourceful
       end
 
       def collection_path
-        self.send "#{model_name.to_s.pluralize}_path"
+        self.send "#{class_name.model_name.route_key}_path"
       end
 
       def respond_with_dual(*resources, &block)

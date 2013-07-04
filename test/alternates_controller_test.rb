@@ -1,6 +1,6 @@
 require 'test_helper'
 
-describe DocumentsController do
+describe AlternatesController do
   extend BaseActions
 
   test_base_actions model: :document, with_id: 100,

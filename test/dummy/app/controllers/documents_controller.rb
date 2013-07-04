@@ -1,4 +1,4 @@
-class DocumentsController < ApplicationController
+class DocumentsController < BaseController
   include Resourceful::Base
 
   respond_to :html
