@@ -113,7 +113,9 @@ module Resourceful
     end
 
     module ClassMethods
-      def resourceful(model: nil, strong_params: nil)
+      ACTIONS = [:index, :show, :edit, :update, :new, :create, :destroy]
+
+      def resourceful(model: nil, strong_params: nil, actions: :all)
         self.class_attribute :model_name, :class_name, :strong_params,
           instance_writer: false
 
@@ -124,10 +126,28 @@ module Resourceful
         include InstanceMethods
         include Resourceful::Actions
 
+        setup_actions actions unless actions == :all
+
         helper_method :collection, :resource
       end
 
       protected
+      def setup_actions(actions)
+        keep_actions = actions
+
+        if actions.include?(:all)
+          keep_actions = ACTIONS
+        end
+
+        options = actions.extract_options!
+        except_actions = options[:except]
+        keep_actions = keep_actions - except_actions
+
+        (ACTIONS - keep_actions).uniq.each do |action|
+          undef_method action.to_sym, "#{action.to_sym}!"
+        end
+      end
+
       def class_from_name
         if model_name.to_s.include? '_'
           ns, *klass = model_name.to_s.split('_').collect(&:camelize)
