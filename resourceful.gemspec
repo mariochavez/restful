@@ -20,5 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rubocop"
+  s.add_development_dependency "flog"
+  s.add_development_dependency "flay"
   s.add_development_dependency "minitest-rails", "~> 0.9.0"
 end

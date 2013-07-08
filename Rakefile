@@ -18,9 +18,19 @@ Bundler::GemHelper.install_tasks
 
 require 'rake/testtask'
 
-desc 'Rum rubocop checks'
+desc 'Run rubocop checks'
 task :rubocop do
     sh 'rubocop lib test'
+end
+
+desc 'Run flay checks'
+task :flay do
+    sh 'find lib -name \*.rb | xargs flog'
+end
+
+desc 'Run flog checks'
+task :flog do
+    sh 'flay lib/*.rb'
 end
 
 Rake::TestTask.new(:test) do |t|
