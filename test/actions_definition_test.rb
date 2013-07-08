@@ -2,6 +2,8 @@ require 'test_helper'
 
 describe 'Actions definition' do
   it 'have all REST actions when no action is defined' do
+    ##
+    # Controller class for tests
     class AllDefaultActionsController < BaseController
       respond_to :html
       resourceful model: :document
@@ -19,6 +21,8 @@ describe 'Actions definition' do
   end
 
   it 'have all REST actions when all actions are defined' do
+    ##
+    # Controller class for tests
     class AllExplicitActionsController < BaseController
       respond_to :html
       resourceful model: :document, actions: :all
@@ -36,9 +40,13 @@ describe 'Actions definition' do
   end
 
   it 'have all but except actions' do
+    ##
+    # Controller class for tests
     class ExceptActionsController < BaseController
       respond_to :html
-      resourceful model: :document, actions: [ :all, except: [:edit, :update, :destroy] ]
+      resourceful model: :document,
+        actions: [:all,
+                   except: [:edit, :update, :destroy]]
     end
 
     subject = ExceptActionsController.new
@@ -53,9 +61,13 @@ describe 'Actions definition' do
   end
 
   it 'have listed actions but except actions' do
+    ##
+    # Controller class for tests
     class HandPickActionsController < BaseController
       respond_to :html
-      resourceful model: :document, actions: [:index, :show, :destroy , except: [:edit, :update, :destroy]]
+      resourceful model: :document,
+        actions: [:index, :show, :destroy,
+                  except: [:edit, :update, :destroy]]
     end
 
     subject = HandPickActionsController.new
@@ -70,9 +82,13 @@ describe 'Actions definition' do
   end
 
   it 'have invalid actions listed' do
+    ##
+    # Controller class for tests
     class InvalidActionsController < BaseController
       respond_to :html
-      resourceful model: :document, actions: [:indice, :show, :eliminar , except: [:edit, :actualizar, :destroy]]
+      resourceful model: :document,
+        actions: [:indice, :show, :eliminar,
+                  except: [:edit, :actualizar, :destroy]]
     end
 
     subject = InvalidActionsController.new

@@ -1,5 +1,8 @@
+##
+# This module allow to add common tests for a REST controller,
+# allowing to eliminate test repetitions
 module BaseActions
-  def test_base_actions(model: nil, with_id: nil, for_params: {})
+  def test_base_actions(model: nil, with_id: nil, for_params: {}) # rubocop:disable MethodLength, LineLength
     self.class_eval do
       let(:resource) { model }
       let(:resources) { model.to_s.pluralize.to_sym }
@@ -54,7 +57,8 @@ module BaseActions
           end
 
           it 'raise exception on not found' do
-            Proc.new{ get :edit, id: 1 }.must_raise ActiveRecord::RecordNotFound
+            proc { get :edit, id: 1 }
+            .must_raise ActiveRecord::RecordNotFound
           end
         end
 
@@ -77,7 +81,8 @@ module BaseActions
           end
 
           it 'raise exception on not found' do
-            Proc.new{ put :update, id: 1 }.must_raise ActiveRecord::RecordNotFound
+            proc { put :update, id: 1 }
+              .must_raise ActiveRecord::RecordNotFound
           end
         end
 
@@ -91,7 +96,8 @@ module BaseActions
           end
 
           it 'raise exception on not found' do
-            Proc.new{ get :show, id: 1 }.must_raise ActiveRecord::RecordNotFound
+            proc { get :show, id: 1 }
+              .must_raise ActiveRecord::RecordNotFound
           end
         end
 
@@ -103,11 +109,12 @@ module BaseActions
           end
 
           it 'raise exception on not found' do
-            Proc.new{ delete :destroy, id: 1 }.must_raise ActiveRecord::RecordNotFound
+            proc { delete :destroy, id: 1 }
+              .must_raise ActiveRecord::RecordNotFound
           end
         end
 
-        def generate_invalid_params
+        def generate_invalid_params # rubocop:disable EmptyLineBetweenDefs
           invalid_params = valid_params.deep_dup
           invalid_params.keys.each do |top_key|
             invalid_params[top_key].keys.each do |key|
