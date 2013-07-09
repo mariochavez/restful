@@ -1,3 +1,4 @@
+{<img src="https://travis-ci.org/mariochavez/restful.png?branch=master" alt="Build Status" />}[https://travis-ci.org/mariochavez/restful]
 = Restful
 Restful helps to keep Controllers DRY, removing repetitive code from basic REST actions.
 
