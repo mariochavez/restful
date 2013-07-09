@@ -28,7 +28,8 @@ end
 ##
 # Base class for Tests
 class ActiveSupport::TestCase
-  ActiveRecord::Migration.check_pending!
+  migrations_path = File.expand_path('../dummy/db/migrate', __FILE__)
+  ActiveRecord::Migrator.migrate migrations_path
 
   fixtures :all
 

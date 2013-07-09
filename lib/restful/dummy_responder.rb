@@ -4,9 +4,7 @@ module Restful
   # Since there is no action need it from it, it just implements
   # a method_missing for responder that needs to be ignored.
   class DummyResponder
-    ##
-    # This methods just allow this class to respond to every call.
-    def method_missing(args)
+    def method_missing(args) #:nodoc:
       nil
     end
   end

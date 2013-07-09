@@ -5,7 +5,7 @@ require "restful/version"
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.name        = "restful"
+  s.name        = "restful_controller"
   s.version     = Restful::VERSION
   s.authors     = ["Mario Alberto Chavez"]
   s.email       = ["mario.chavez@gmail.com"]
