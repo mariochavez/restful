@@ -1,3 +1,148 @@
 = Restful
+Restful helps to keep Controllers DRY, removing repetitive code from basic REST actions.
 
-This project rocks and uses MIT-LICENSE.
+Very basic controllers repeat over and over the same code for REST actions, but if you do TDD - and should be doing it -, the code to test these controllers is also repetitive and boring.
+
+Restful helps you to get rid of that repetitive and boring code with a very simple defaults for RESTful controllers.
+
+But wait, this is not a new idea, there is already Inherited Resources (https://github.com/josevalim/inherited_resources) gem that allows you to do the same and maybe even more; so why write another library?
+
+It's simple, I had the time and I wanted to try it. This library does not cover all the cases that Inherited Resources cover, but it's good enough for so many controllers. Also all the source code is documented and quite simple to follow in case that you want to learn how is it implemented.
+
+== Installation
+Resful requires Ruby on Rails 4.0 and Ruby 2.0.
+
+To install it, just add the Restful gem to your Gemfile:
+
+  gem 'restful'
+
+Run bundler command and you are all set.
+
+== Usage
+Restful module must be included on each controller that you want to become Restful. Also it's need for these controllers to include the respond_to macro, which will especify the format to which our controllers will respond to.
+
+Finally the resful macro is need it to setup our controller.
+This macro accepts 3 params:
+
+=== Params
+* model: A requires parameter which is a symbol of the model name.
+* strong_params: A symbol, a string or a proc for the method that should apply the strong parameters to allow Active Model mass assignments.
+* actions: An array of actions that a controller should implement, if none is passed then all seven REST actions are defined.
+
+=== Examples
+
+Simple:
+
+  class DocumentsController < ApplicationController
+    include restful
+    respond_to :html
+
+    restful model: :document, strong_params: :document_params
+  end
+
+This definition will create the seven REST actions for Document model,
+this setup a single object instance variable @document and a collection
+variable @documents.
+
+It's expected that this controller will provide a method
+document_params which will be used to allow mass assignments.
+
+Strong params variation:
+
+  class DocumentsController < ApplicationController
+    include restful
+    respond_to :html
+
+    restful model: :document,
+      strong_params: ->(params){ params.require(:document).permit :name  }
+  end
+
+In this example instead of providing a strong params method by string
+or symbol, a proc is passed to do the same job.
+
+Listed actions variation:
+
+The last parameter *actions* allows you to list in an array the actions
+that you want your controller to have:
+
+  class DocumentsController < ApplicationController
+    include restful
+    respond_to :html
+
+    restful model: :document, strong_params: :document_params,
+      actions: [:index, :show]
+  end
+
+In this case our controller will only respond to those 2 actions. We
+can do it the other way, indicate list of actions that shouldn't be
+defined:
+
+  class DocumentsController < ApplicationController
+    include restful
+    respond_to :html
+
+    restful model: :document, strong_params: :document_params,
+      actions: [:all, except: [:destroy, :show]]
+  end
+
+For this last example all seven REST actions will be defined but :destroy and :show
+
+== Actions
+
+Used as a template for all Restful controller actions
+
+By default an action is created with an alias method with a bang(!).
+If you need to override an action, just redefine it in you controller,
+to call this base action, just call the bang version:
+
+  def index
+    @documents = Document.all
+    index!
+  end
+
+This will allow you to let Restful to continue with the action flow.
+
+When overriding an action, just be sure to have inside de action variables
+with the name of the defined model, doing this will allow you to call the
+bang action version:
+
+  def new
+    @document = Document.new name: 'Default name'
+    new!
+  end
+
+For actions like :create and :update a notice or alert can be passed as
+option to be set in flash object:
+
+  def create
+    @document = Document.new secure_params
+    create!(notice: 'Hey a new document was created!')
+  end
+
+Also a block can be passed for the happy path to tell the application to
+where redirect:
+
+  def update
+    @document = Document.find params[:id]
+    @document.update_attributes secure_params
+
+    update!(notice: 'Document has been updated'){ root_path }
+  end
+
+It's also possible to supply a block for the non-happy path, this means
+proving a dual block for success and failure results from our action:
+
+  def update
+    @document = Document.find params[:id]
+    @document = update_attributes secure_params
+
+    update! do |success, failure|
+      success.html { redirect_to root_path }
+      failure.html { render :custom }
+    end
+  end
+
+== Bugs and feedback
+Use issues at Github to report bugs or give feedback.
+
+Copyright © 2013 Mario Alberto Chavez. This project uses MIT-LICENSE.
