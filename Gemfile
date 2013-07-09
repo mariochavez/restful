@@ -15,4 +15,5 @@ gemspec
 
 group :test do
   gem 'minitest-rails', '~> 0.9.0'
+  gem 'sqlite3'
 end
