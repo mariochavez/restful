@@ -15,7 +15,7 @@ Resful requires Ruby on Rails 4.0 and Ruby 2.0.
 
 To install it, just add the Restful gem to your Gemfile:
 
-  gem 'restful'
+  gem 'restful_controller', require: 'restful'
 
 Run bundler command and you are all set.
 
@@ -35,7 +35,7 @@ This macro accepts 3 params:
 Simple:
 
   class DocumentsController < ApplicationController
-    include restful
+    include Restful::Base
     respond_to :html
 
     restful model: :document, strong_params: :document_params
@@ -51,7 +51,7 @@ document_params which will be used to allow mass assignments.
 Strong params variation:
 
   class DocumentsController < ApplicationController
-    include restful
+    include Restful::Base
     respond_to :html
 
     restful model: :document,
@@ -67,7 +67,7 @@ The last parameter *actions* allows you to list in an array the actions
 that you want your controller to have:
 
   class DocumentsController < ApplicationController
-    include restful
+    include Restful::Base
     respond_to :html
 
     restful model: :document, strong_params: :document_params,
@@ -79,7 +79,7 @@ can do it the other way, indicate list of actions that shouldn't be
 defined:
 
   class DocumentsController < ApplicationController
-    include restful
+    include Restful::Base
     respond_to :html
 
     restful model: :document, strong_params: :document_params,

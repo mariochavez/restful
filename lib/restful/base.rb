@@ -205,7 +205,7 @@ module Restful
       # Simple:
       #
       #   class DocumentsController < ApplicationController
-      #     include restful
+      #     include Restful::Base
       #     respond_to :html
       #
       #     restful model: :document, strong_params: :document_params
@@ -221,7 +221,7 @@ module Restful
       # Strong params variation:
       #
       #   class DocumentsController < ApplicationController
-      #     include restful
+      #     include Restful::Base
       #     respond_to :html
       #
       #     restful model: :document,
@@ -237,7 +237,7 @@ module Restful
       # that you want your controller to have:
       #
       #   class DocumentsController < ApplicationController
-      #     include restful
+      #     include Restful::Base
       #     respond_to :html
       #
       #     restful model: :document, strong_params: :document_params,
@@ -249,7 +249,7 @@ module Restful
       # defined:
       #
       #   class DocumentsController < ApplicationController
-      #     include restful
+      #     include Restful::Base
       #     respond_to :html
       #
       #     restful model: :document, strong_params: :document_params,
