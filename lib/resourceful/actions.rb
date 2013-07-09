@@ -64,16 +64,34 @@ module Resourceful
   #  end
   #
   module Actions
+    ##
+    # index action, this set a collection of objects to an instance variable
+    # which can be accessed from the view using the collection helper method.
+    # The instance variable name is a pluralization of the model name defined
+    # in the resourceful macro.
     def index(options = {}, &block)
       respond_with(collection, options,  &block)
     end
     alias_method :index!, :index
 
+    ##
+    # new action, creates a new object and sets an instance variable which can
+    # be accessed from the view using the resource helper method. The instance
+    # variable is named after the model name defined in the resourceful macro.
     def new(options = {}, &block)
       respond_with(build_resource, options, &block)
     end
     alias_method :new!, :new
 
+    ##
+    # create action, creates a new object off the received params and sets an
+    # instance variable if record is saved then a redirect to index action is
+    # made.
+    #
+    # If record fail to be saved, the new form is renderd and the instance
+    # variable can be accessed from the view using the resource
+    # helper method. The instance variable is named after the model name
+    # defined in the resourceful macro.
     def create(options = {}, &block)
       object = get_resource_ivar || create_resource
 
@@ -83,6 +101,12 @@ module Resourceful
     end
     alias_method :create!, :create
 
+    ##
+    # edit action, finds an object based on the passed id, if no object is found
+    # an ActiveRecord::RecordNotFound is raised. If the record is found then an
+    # instance variable, based on the model name set in the resourceful macro.
+    # This variable can be accessed in teh form using the resource helper
+    # method.
     def edit(options = {}, &block)
       object = get_resource_ivar || find_resource
 
@@ -90,6 +114,17 @@ module Resourceful
     end
     alias_method :edit!, :edit
 
+    ##
+    # update action, finds an object based on the passed id, if no object is found
+    # an ActiveRecord::RecordNotFound is raised. If the record is found then
+    # it's updated from params using ActiveRecord update_attributes method
+    # and an instance variable is set with the object, variable name is based on
+    # the model name set in the resourceful macro.
+    #
+    # If update_attributes fail, then edit form is displayed, and the instance
+    # variable can be accessed in teh form using the resource helper method.
+    #
+    # If update_attributes success, a redirect to the index action is made.
     def update(options = {}, &block)
       object = get_resource_ivar || find_and_update_resource
 
@@ -99,6 +134,11 @@ module Resourceful
     end
     alias_method :update!, :update
 
+    ##
+    # show action, finds an object based on the passed id, if no object is found
+    # an ActiveRecord::RecordNotFound is raised. If the record is found then
+    # an instance variable is set with the object, variable name is based on
+    # the model name set in the resourceful macro.
     def show(options = {}, &block)
       object = get_resource_ivar || find_resource
 
@@ -106,6 +146,10 @@ module Resourceful
     end
     alias_method :show!, :show
 
+    ##
+    # destroy action, finds an object based on the passed id, if no object is found
+    # an ActiveRecord::RecordNotFound is raised. If the record is found then
+    # it's destroyed and a redirect to the index action is made.
     def destroy(options = {}, &block)
       object = get_resource_ivar || find_resource
 
