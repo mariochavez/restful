@@ -1,4 +1,4 @@
-module Resourceful
+module Restful
   ##
   # This class acts as a respoder for dual block actions.
   # Since there is no action need it from it, it just implements

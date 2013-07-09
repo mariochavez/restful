@@ -1,8 +1,8 @@
 class CustomNoticesController < BaseController
-  include Resourceful::Base
+  include Restful::Base
 
   respond_to :html
-  resourceful model: :document, strong_params: ->(params) { params.require(:document).permit :name }
+  restful model: :document, strong_params: ->(params) { params.require(:document).permit :name }
 
   def create
     create!(notice: 'A new document was created') { root_url }

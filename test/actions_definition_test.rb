@@ -6,7 +6,7 @@ describe 'Actions definition' do
     # Controller class for tests
     class AllDefaultActionsController < BaseController
       respond_to :html
-      resourceful model: :document
+      restful model: :document
     end
 
     subject = AllDefaultActionsController.new
@@ -25,7 +25,7 @@ describe 'Actions definition' do
     # Controller class for tests
     class AllExplicitActionsController < BaseController
       respond_to :html
-      resourceful model: :document, actions: :all
+      restful model: :document, actions: :all
     end
 
     subject = AllExplicitActionsController.new
@@ -44,7 +44,7 @@ describe 'Actions definition' do
     # Controller class for tests
     class ExceptActionsController < BaseController
       respond_to :html
-      resourceful model: :document,
+      restful model: :document,
         actions: [:all,
                    except: [:edit, :update, :destroy]]
     end
@@ -65,7 +65,7 @@ describe 'Actions definition' do
     # Controller class for tests
     class HandPickActionsController < BaseController
       respond_to :html
-      resourceful model: :document,
+      restful model: :document,
         actions: [:index, :show, :destroy,
                   except: [:edit, :update, :destroy]]
     end
@@ -86,7 +86,7 @@ describe 'Actions definition' do
     # Controller class for tests
     class InvalidActionsController < BaseController
       respond_to :html
-      resourceful model: :document,
+      restful model: :document,
         actions: [:indice, :show, :eliminar,
                   except: [:edit, :actualizar, :destroy]]
     end

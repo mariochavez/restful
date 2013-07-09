@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    resourceful (0.0.1)
+    restful (0.0.1)
       rails (~> 4.0.0)
 
 GEM
@@ -108,6 +108,6 @@ DEPENDENCIES
   flay
   flog
   minitest-rails (~> 0.9.0)
-  resourceful!
+  restful!
   rubocop
   sqlite3

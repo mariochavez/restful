@@ -1,6 +1,6 @@
-module Resourceful
+module Restful
   ##
-  # This is the main module for Resourceful implementation, in here class
+  # This is the main module for Restful implementation, in here class
   # methods that implement the configuration macro that need to be included in
   # controllers is defined.
   #
@@ -9,17 +9,17 @@ module Resourceful
   module Base
     ##
     # Through this method, when this module is included in a controller, all
-    # Resourceful functionality is defined for it.
+    # Restful functionality is defined for it.
     def self.included(base)
       base.extend ClassMethods
     end
 
     ##
-    # Instance helper methods for a Resourceful controller
+    # Instance helper methods for a Restful controller
     module InstanceMethods
       ##
       # Helper method that allows you to refer to the instance variable that
-      # represent a single object from the model name defined in the resourceful
+      # represent a single object from the model name defined in the restful
       # macro.
       def resource
         get_resource_ivar
@@ -28,7 +28,7 @@ module Resourceful
       ##
       # Helper method that allows you to refer to the instance variable that
       # represents the collection of objects from the model name defined in the
-      # resourceful macro.
+      # restful macro.
       def collection
         get_collection_ivar || begin
           set_collection_ivar class_name.all
@@ -38,7 +38,7 @@ module Resourceful
       protected
       ##
       # Return the instance variable name for a single object based on the model
-      # name defined in the resourceful macro, example:
+      # name defined in the restful macro, example:
       #
       #   @document
       def resource_ivar
@@ -47,7 +47,7 @@ module Resourceful
 
       ##
       # Return the instance variable name for a collection of objects based on
-      # the model name defined in the resourceful macro, example:
+      # the model name defined in the restful macro, example:
       #
       #   @documents
       def collection_ivar
@@ -106,7 +106,7 @@ module Resourceful
 
       ##
       # Apply Strong Params, using a string or symbol for method name or a Proc
-      # given to the resourceful macro.
+      # given to the restful macro.
       def secure_params
         return params unless strong_params.present?
 
@@ -133,7 +133,7 @@ module Resourceful
         case block.try(:arity)
         when 2
           respond_with(*args) do |responder|
-            dummy_responder = Resourceful::DummyResponder.new
+            dummy_responder = Restful::DummyResponder.new
 
             if get_resource_ivar.errors.empty?
               block.call responder, dummy_responder
@@ -182,14 +182,14 @@ module Resourceful
     end
 
     ##
-    # Class macros to setup resourceful functionality
+    # Class macros to setup restful functionality
     module ClassMethods
       ##
       # List of REST actions
       ACTIONS = [:index, :show, :edit, :update, :new, :create, :destroy]
 
       ##
-      # Resourceful is the macro that setup a controller to become restful.
+      # Restful is the macro that setup a controller to become restful.
       # This macro accepts 3 params:
       #
       # ==== Params
@@ -266,7 +266,7 @@ module Resourceful
       # include it in your controllers and list the formats do you wish your
       # controller to respond.
       #
-      def resourceful(model: nil, strong_params: nil, actions: :all)
+      def restful(model: nil, strong_params: nil, actions: :all)
         self.class_attribute :model_name, :class_name, :strong_params,
           instance_writer: false
 
@@ -275,7 +275,7 @@ module Resourceful
         self.class_name = class_from_name
 
         include InstanceMethods
-        include Resourceful::Actions
+        include Restful::Actions
 
         setup_actions actions unless actions == :all
 

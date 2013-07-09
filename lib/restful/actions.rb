@@ -1,4 +1,4 @@
-module Resourceful
+module Restful
   ##
   # = Actions
   #
@@ -13,7 +13,7 @@ module Resourceful
   #     index!
   #   end
   #
-  # This will allow you to let Resourceful to continue with the action flow.
+  # This will allow you to let Restful to continue with the action flow.
   #
   # When overriding an action, just be sure to have inside de action variables
   # with the name of the defined model, doing this will allow you to call the
@@ -55,7 +55,7 @@ module Resourceful
   #     end
   #   end
   #
-  # Be aware that Resourceful require that your controllers define to what they
+  # Be aware that Restful require that your controllers define to what they
   # respond, it could be :html, :json or anything else, just remember to add
   # the respond_to macro to the top of your controller's definition:
   #
@@ -68,7 +68,7 @@ module Resourceful
     # index action, this set a collection of objects to an instance variable
     # which can be accessed from the view using the collection helper method.
     # The instance variable name is a pluralization of the model name defined
-    # in the resourceful macro.
+    # in the restful macro.
     def index(options = {}, &block)
       respond_with(collection, options,  &block)
     end
@@ -77,7 +77,7 @@ module Resourceful
     ##
     # new action, creates a new object and sets an instance variable which can
     # be accessed from the view using the resource helper method. The instance
-    # variable is named after the model name defined in the resourceful macro.
+    # variable is named after the model name defined in the restful macro.
     def new(options = {}, &block)
       respond_with(build_resource, options, &block)
     end
@@ -91,7 +91,7 @@ module Resourceful
     # If record fail to be saved, the new form is renderd and the instance
     # variable can be accessed from the view using the resource
     # helper method. The instance variable is named after the model name
-    # defined in the resourceful macro.
+    # defined in the restful macro.
     def create(options = {}, &block)
       object = get_resource_ivar || create_resource
 
@@ -102,9 +102,12 @@ module Resourceful
     alias_method :create!, :create
 
     ##
-    # edit action, finds an object based on the passed id, if no object is found
-    # an ActiveRecord::RecordNotFound is raised. If the record is found then an
-    # instance variable, based on the model name set in the resourceful macro.
+    # edit action, finds an object based on the passed id, if no object is
+    # found an ActiveRecord::RecordNotFound is raised.
+    #
+    # If the record is found then an instance variable, based on the model
+    # name set in the restful macro.
+    #
     # This variable can be accessed in teh form using the resource helper
     # method.
     def edit(options = {}, &block)
@@ -115,11 +118,11 @@ module Resourceful
     alias_method :edit!, :edit
 
     ##
-    # update action, finds an object based on the passed id, if no object is found
-    # an ActiveRecord::RecordNotFound is raised. If the record is found then
-    # it's updated from params using ActiveRecord update_attributes method
-    # and an instance variable is set with the object, variable name is based on
-    # the model name set in the resourceful macro.
+    # update action, finds an object based on the passed id, if no object is
+    # found an ActiveRecord::RecordNotFound is raised. If the record is found
+    # then it's updated from params using ActiveRecord update_attributes method
+    # and an instance variable is set with the object, variable name is based
+    # on the model name set in the restful macro.
     #
     # If update_attributes fail, then edit form is displayed, and the instance
     # variable can be accessed in teh form using the resource helper method.
@@ -135,10 +138,10 @@ module Resourceful
     alias_method :update!, :update
 
     ##
-    # show action, finds an object based on the passed id, if no object is found
-    # an ActiveRecord::RecordNotFound is raised. If the record is found then
-    # an instance variable is set with the object, variable name is based on
-    # the model name set in the resourceful macro.
+    # show action, finds an object based on the passed id, if no object is
+    # found an ActiveRecord::RecordNotFound is raised. If the record is found
+    # then an instance variable is set with the object, variable name is based
+    # on the model name set in the restful macro.
     def show(options = {}, &block)
       object = get_resource_ivar || find_resource
 
@@ -147,9 +150,9 @@ module Resourceful
     alias_method :show!, :show
 
     ##
-    # destroy action, finds an object based on the passed id, if no object is found
-    # an ActiveRecord::RecordNotFound is raised. If the record is found then
-    # it's destroyed and a redirect to the index action is made.
+    # destroy action, finds an object based on the passed id, if no object is
+    # found an ActiveRecord::RecordNotFound is raised. If the record is found
+    # then it's destroyed and a redirect to the index action is made.
     def destroy(options = {}, &block)
       object = get_resource_ivar || find_resource
 

@@ -9,7 +9,7 @@ require "sprockets/railtie"
 require "minitest/rails/railtie"
 
 Bundler.require(*Rails.groups)
-require "resourceful"
+require "restful"
 
 module Dummy
   class Application < Rails::Application

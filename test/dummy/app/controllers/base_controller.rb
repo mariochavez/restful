@@ -1,5 +1,5 @@
 class BaseController < ApplicationController
-  include Resourceful::Base
+  include Restful::Base
 
   respond_to :html
 end

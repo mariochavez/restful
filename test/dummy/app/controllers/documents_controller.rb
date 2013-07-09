@@ -1,8 +1,8 @@
 class DocumentsController < BaseController
-  include Resourceful::Base
+  include Restful::Base
 
   respond_to :html
-  resourceful model: :document, strong_params: :document_params
+  restful model: :document, strong_params: :document_params
 
   protected
   def document_params
