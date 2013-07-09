@@ -12,3 +12,7 @@ gemspec
 
 # To use debugger
 # gem 'debugger'
+
+group :test do
+  gem 'minitest-rails', '~> 0.9.0'
+end
