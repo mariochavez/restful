@@ -35,6 +35,50 @@ module Restful
         end
       end
 
+      ##
+      # Helper method that gives you access to the class of your model.
+      def resource_class
+        class_name
+      end
+
+      ##
+      # Generic route path helper method to edit a model.
+      def edit_resource_path(object)
+        self.send "edit_#{class_name.model_name.singular_route_key}_path",
+          object
+      end
+
+      ##
+      # Generic route url helper method to edit a model.
+      def edit_resource_url(object)
+        self.send "edit_#{class_name.model_name.singular_route_key}_url",
+          object
+      end
+
+      ##
+      # Generic route path helper method for new model.
+      def new_resource_path
+        self.send "new_#{class_name.model_name.singular_route_key}_path"
+      end
+
+      ##
+      # Generic route url helper method for new model.
+      def new_resource_url
+        self.send "new_#{class_name.model_name.singular_route_key}_url"
+      end
+
+      ##
+      # This is a helper method to get the object collection path.
+      def collection_path
+        self.send "#{class_name.model_name.route_key}_path"
+      end
+
+      ##
+      # This is a helper method to get the object collection url.
+      def collection_url
+        self.send "#{class_name.model_name.route_key}_url"
+      end
+
       protected
       ##
       # Return the instance variable name for a single object based on the model
@@ -115,12 +159,6 @@ module Restful
         end
 
         strong_params.call(params)
-      end
-
-      ##
-      # This is a helper method to get the object collection path.
-      def collection_path
-        self.send "#{class_name.model_name.route_key}_path"
       end
 
       ##
@@ -279,7 +317,9 @@ module Restful
 
         setup_actions actions unless actions == :all
 
-        helper_method :collection, :resource
+        helper_method :collection, :resource, :resource_class,
+          :edit_resource_path, :edit_resource_url, :new_resource_path,
+          :new_resource_url, :collection_path, :collection_url
       end
 
       protected
