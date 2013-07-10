@@ -143,6 +143,20 @@ proving a dual block for success and failure results from our action:
     end
   end
 
+== Helper methods
+Restful add a set of handy methods that allows it to play nice with Rails view inheritance.
+
+These methods are:
+
+  # Let's assume that our model is Document
+  collection_(path|url) # will return /documents
+  edit_resource_(path|url)(object) # will return /documents/edit/1
+  new_resource_([ath|url) # will return /documents/new
+
+  resource_class # will return class definition Document
+
+If you want to know how to take advantage of Rails View Inheritance then take a look at this document https://github.com/mariochavez/restful/wiki/View-Inheritance-with-Rails
+
 == Bugs and feedback
 Use issues at Github to report bugs or give feedback.
 
