@@ -70,7 +70,7 @@ module Restful
     # The instance variable name is a pluralization of the model name defined
     # in the restful macro.
     def index(options = {}, &block)
-      respond_with(collection, options,  &block)
+      respond_with(collection, options,  &block) if stale?(collection, last_modified: collection.maximum(:updated_at))
     end
     alias_method :index!, :index
 
@@ -145,7 +145,7 @@ module Restful
     def show(options = {}, &block)
       object = get_resource_ivar || find_resource
 
-      respond_with(object, options, &block)
+      respond_with(object, options, &block) if stale?(object)
     end
     alias_method :show!, :show
 
