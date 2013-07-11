@@ -143,6 +143,13 @@ proving a dual block for success and failure results from our action:
     end
   end
 
+=== Rails caching
+Index and show actions added using Restful makes use of Rails #stale? method, which sets the *etag* and *last_modified* response headers that helps client and Rails application to reuse content if this haven't changed.
+
+For content that haven't changed, Rails returns a 304 not modified http state and on Rails server we avoid rendering this content and with this Rails do not send data back to the client. The client should reuse its cached version of it.
+
+If content have changed then it is rendered and sent back to the client along with the updated headers.
+
 == Helper methods
 Restful add a set of handy methods that allows it to play nice with Rails view inheritance.
 
