@@ -150,6 +150,8 @@ For content that haven't changed, Rails returns a 304 not modified http state an
 
 If content have changed then it is rendered and sent back to the client along with the updated headers.
 
+http://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-stale-3F
+
 == Helper methods
 Restful add a set of handy methods that allows it to play nice with Rails view inheritance.
 
