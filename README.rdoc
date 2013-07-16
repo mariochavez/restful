@@ -167,7 +167,7 @@ These methods are:
 If you want to know how to take advantage of Rails View Inheritance then take a look at this document https://github.com/mariochavez/restful/wiki/Rails-Template-Inheritance
 
 == Sample project
-A sample project can be found [here](https://github.com/mariochavez/restful_sample) it shows all about the topics discussed in this Readme file.
+A sample project can be found here https://github.com/mariochavez/restful_sample, it shows all about the topics discussed in this Readme file.
 
 == Bugs and feedback
 Use issues at Github to report bugs or give feedback.
