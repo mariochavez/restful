@@ -23,7 +23,7 @@ Run bundler command and you are all set.
 Restful module must be included on each controller that you want to become Restful. Also it's need for these controllers to include the respond_to macro, which will especify the format to which our controllers will respond to.
 
 Finally the resful macro is need it to setup our controller.
-This macro accepts 3 params:
+This macro accepts 2 params:
 
 === Params
 * model: A requires parameter which is a symbol of the model name.
