@@ -2,10 +2,10 @@ class DocumentsController < BaseController
   include Restful::Base
 
   respond_to :html
-  restful model: :document, strong_params: :document_params
+  restful model: :document
 
   protected
-  def document_params
+  def secure_params
     params.require(:document).permit :name
   end
 end

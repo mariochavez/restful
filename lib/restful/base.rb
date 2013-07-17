@@ -31,7 +31,7 @@ module Restful
       # restful macro.
       def collection
         get_collection_ivar || begin
-          set_collection_ivar class_name.all
+        set_collection_ivar class_name.all
         end
       end
 
@@ -134,7 +134,7 @@ module Restful
       # a new object.
       def build_resource
         get_resource_ivar || begin
-          set_resource_ivar class_name.new
+        set_resource_ivar class_name.new
         end
       end
 
@@ -142,23 +142,35 @@ module Restful
       # Creates a new object using request params, tries to save the object and
       # set it to the object's instance variable.
       def create_resource
-        class_name.new(secure_params).tap do |model|
+        class_name.new(get_secure_params).tap do |model|
           model.save
           set_resource_ivar model
         end
       end
 
       ##
-      # Apply Strong Params, using a string or symbol for method name or a Proc
-      # given to the restful macro.
-      def secure_params
-        return params unless strong_params.present?
+      # Calls template methods for getting params curated by strong params
+      # This method calls to a 3 different hook methods in the controller.
+      # First depending on the action :create or :update the controller is
+      # tested to have a create_secure_params or update_secure_params method,
+      # if method is not present then it tries with a generic method
+      # secure_params.
+      #
+      # If no template method is implemented in the controller then
+      # a NotImplementedError exception is raised.
+      def get_secure_params
+        params_method = "#{action_name}_secure_params".to_sym
 
-        if strong_params.is_a?(Symbol) || strong_params.is_a?(String)
-          return self.send strong_params
+        filterd_params =
+          (send(params_method) if self.respond_to?(params_method, true)) ||
+          (send(:secure_params)if self.respond_to?(:secure_params, true))
+
+        unless filterd_params
+          raise NotImplementedError,
+            'You need to define template methods for strong params'
         end
 
-        strong_params.call(params)
+        filterd_params
       end
 
       ##
@@ -212,7 +224,7 @@ module Restful
       def find_and_update_resource
         model = class_name.find(params[:id])
         model.tap do |m|
-          m.update_attributes secure_params
+          m.update_attributes get_secure_params
           set_resource_ivar m
         end
       end
@@ -232,9 +244,6 @@ module Restful
       #
       # ==== Params
       # * model: A requires parameter which is a symbol of the model name.
-      # * strong_params: A symbol, a string or a proc for the method that
-      # should apply the strong parameters to allow Active Model mass
-      # assignments.
       # * actions: An array of actions that a controller should implement, if
       # none is passed then all seven REST actions are defined.
       #
@@ -246,28 +255,12 @@ module Restful
       #     include Restful::Base
       #     respond_to :html
       #
-      #     restful model: :document, strong_params: :document_params
+      #     restful model: :document
       #   end
       #
       # This definition will create the seven REST actions for Document model,
       # this setup a single object instance variable @document and a collection
       # variable @documents.
-      #
-      # It's expected that this controller will provide a method
-      # document_params which will be used to allow mass assignments.
-      #
-      # Strong params variation:
-      #
-      #   class DocumentsController < ApplicationController
-      #     include Restful::Base
-      #     respond_to :html
-      #
-      #     restful model: :document,
-      #       strong_params: ->(params){ params.require(:document).permit :name  }
-      #   end
-      #
-      # In this example instead of providing a strong params method by string
-      # or symbol, a proc is passed to do the same job.
       #
       # Listed actions variation:
       #
@@ -278,8 +271,7 @@ module Restful
       #     include Restful::Base
       #     respond_to :html
       #
-      #     restful model: :document, strong_params: :document_params,
-      #       actions: [:index, :show]
+      #     restful model: :document, actions: [:index, :show]
       #   end
       #
       # In this case our controller will only respond to those 2 actions. We
@@ -290,12 +282,20 @@ module Restful
       #     include Restful::Base
       #     respond_to :html
       #
-      #     restful model: :document, strong_params: :document_params,
-      #       actions: [:all, except: [:destroy, :show]]
+      #     restful model: :document, actions: [:all, except: [:destroy, :show]]
       #   end
       #
       # For this last example all seven REST actions will be defined but
       # :destroy and :show
+      #
+      # Strong params
+      # Restful provides 3 hooks for you to implement in your controller, two
+      # of these hooks will be called depending on the action that is being
+      # executed: :create_secure_params and :update_secure_params.
+      #
+      # if you don't require a specific strong params definition for each
+      # action, then just implement :secure_params method and this will be
+      # called.
       #
       # ==== Considerations
       # From previous examples you must have notice by now that the respond_to
@@ -304,12 +304,11 @@ module Restful
       # include it in your controllers and list the formats do you wish your
       # controller to respond.
       #
-      def restful(model: nil, strong_params: nil, actions: :all)
-        self.class_attribute :model_name, :class_name, :strong_params,
+      def restful(model: nil, actions: :all)
+        self.class_attribute :model_name, :class_name,
           instance_writer: false
 
         self.model_name = model
-        self.strong_params = strong_params
         self.class_name = class_from_name
 
         include InstanceMethods

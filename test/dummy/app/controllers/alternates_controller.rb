@@ -2,7 +2,7 @@ class AlternatesController < BaseController
   include Restful::Base
 
   respond_to :html
-  restful model: :document, strong_params: :document_params
+  restful model: :document
 
   def index
     @documents = Document.all
@@ -15,7 +15,7 @@ class AlternatesController < BaseController
   end
 
   def create
-    @document = Document.new document_params
+    @document = Document.new secure_params
     @document.save
     create!
   end
@@ -27,7 +27,7 @@ class AlternatesController < BaseController
 
   def update
     @document = Document.find params[:id]
-    @document.update_attributes document_params
+    @document.update_attributes secure_params
     update!
   end
 
@@ -43,7 +43,7 @@ class AlternatesController < BaseController
   end
 
   protected
-  def document_params
+  def secure_params
     params.require(:document).permit :name
   end
 end

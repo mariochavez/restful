@@ -27,7 +27,6 @@ This macro accepts 3 params:
 
 === Params
 * model: A requires parameter which is a symbol of the model name.
-* strong_params: A symbol, a string or a proc for the method that should apply the strong parameters to allow Active Model mass assignments.
 * actions: An array of actions that a controller should implement, if none is passed then all seven REST actions are defined.
 
 === Examples
@@ -38,28 +37,12 @@ Simple:
     include Restful::Base
     respond_to :html
 
-    restful model: :document, strong_params: :document_params
+    restful model: :document
   end
 
 This definition will create the seven REST actions for Document model,
 this setup a single object instance variable @document and a collection
 variable @documents.
-
-It's expected that this controller will provide a method
-document_params which will be used to allow mass assignments.
-
-Strong params variation:
-
-  class DocumentsController < ApplicationController
-    include Restful::Base
-    respond_to :html
-
-    restful model: :document,
-      strong_params: ->(params){ params.require(:document).permit :name  }
-  end
-
-In this example instead of providing a strong params method by string
-or symbol, a proc is passed to do the same job.
 
 Listed actions variation:
 
@@ -70,8 +53,7 @@ that you want your controller to have:
     include Restful::Base
     respond_to :html
 
-    restful model: :document, strong_params: :document_params,
-      actions: [:index, :show]
+    restful model: :document, actions: [:index, :show]
   end
 
 In this case our controller will only respond to those 2 actions. We
@@ -82,11 +64,11 @@ defined:
     include Restful::Base
     respond_to :html
 
-    restful model: :document, strong_params: :document_params,
-      actions: [:all, except: [:destroy, :show]]
+    restful model: :document, actions: [:all, except: [:destroy, :show]]
   end
 
-For this last example all seven REST actions will be defined but :destroy and :show
+For this last example all seven REST actions will be defined but
+:destroy and :show
 
 == Actions
 
@@ -142,6 +124,15 @@ proving a dual block for success and failure results from our action:
       failure.html { render :custom }
     end
   end
+
+Strong params
+Restful provides 3 hooks for you to implement in your controller, two
+of these hooks will be called depending on the action that is being
+executed: :create_secure_params and :update_secure_params.
+
+if you don't require a specific strong params definition for each
+action, then just implement :secure_params method and this will be
+called.
 
 === Rails caching
 Index and show actions added using Restful makes use of Rails #stale? method, which sets the *etag* and *last_modified* response headers that helps client and Rails application to reuse content if this haven't changed.
