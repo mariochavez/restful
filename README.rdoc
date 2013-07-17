@@ -141,6 +141,8 @@ For content that haven't changed, Rails returns a 304 not modified http state an
 
 If content have changed then it is rendered and sent back to the client along with the updated headers.
 
+http://api.rubyonrails.org/classes/ActionController/ConditionalGet.html#method-i-stale-3F
+
 == Helper methods
 Restful add a set of handy methods that allows it to play nice with Rails view inheritance.
 
@@ -153,7 +155,10 @@ These methods are:
 
   resource_class # will return class definition Document
 
-If you want to know how to take advantage of Rails View Inheritance then take a look at this document https://github.com/mariochavez/restful/wiki/View-Inheritance-with-Rails
+If you want to know how to take advantage of Rails View Inheritance then take a look at this document https://github.com/mariochavez/restful/wiki/Rails-Template-Inheritance
+
+== Sample project
+A sample project can be found here https://github.com/mariochavez/restful_sample, it shows all about the topics discussed in this Readme file.
 
 == Bugs and feedback
 Use issues at Github to report bugs or give feedback.
