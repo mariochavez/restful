@@ -125,7 +125,7 @@ proving a dual block for success and failure results from our action:
     end
   end
 
-Strong params
+=== Strong params
 Restful provides 3 hooks for you to implement in your controller, two
 of these hooks will be called depending on the action that is being
 executed: :create_secure_params and :update_secure_params.
