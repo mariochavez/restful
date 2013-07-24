@@ -86,7 +86,7 @@ module Restful
       #
       #   @document
       def resource_ivar
-        "@#{class_name.model_name.element}"
+        "@#{class_name.model_name.singular}"
       end
 
       ##
@@ -95,7 +95,7 @@ module Restful
       #
       #   @documents
       def collection_ivar
-        "@#{class_name.model_name.collection}"
+        "@#{class_name.model_name.plural}"
       end
 
       ##
