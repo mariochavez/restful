@@ -63,14 +63,14 @@ describe 'Actions definition' do
   it 'have listed actions but except actions' do
     ##
     # Controller class for tests
-    class HandPickActionsController < BaseController
+    class HandPickWithExceptionActionsController < BaseController
       respond_to :html
       restful model: :document,
         actions: [:index, :show, :destroy,
                   except: [:edit, :update, :destroy]]
     end
 
-    subject = HandPickActionsController.new
+    subject = HandPickWithExceptionActionsController.new
 
     subject.must_respond_to :index
     subject.must_respond_to :show
@@ -79,6 +79,26 @@ describe 'Actions definition' do
     subject.wont_respond_to :new
     subject.wont_respond_to :create
     subject.wont_respond_to :destroy
+  end
+
+  it 'have listed actions' do
+    ##
+    # Controller class for tests
+    class HandPickActionsController < BaseController
+      respond_to :html
+      restful model: :document,
+        actions: [:index, :show, :destroy]
+    end
+
+    subject = HandPickActionsController.new
+
+    subject.must_respond_to :index
+    subject.must_respond_to :show
+    subject.must_respond_to :destroy
+    subject.wont_respond_to :edit
+    subject.wont_respond_to :update
+    subject.wont_respond_to :new
+    subject.wont_respond_to :create
   end
 
   it 'have invalid actions listed' do

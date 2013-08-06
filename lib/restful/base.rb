@@ -333,7 +333,7 @@ module Restful
         end
 
         options = actions.extract_options!
-        except_actions = options[:except]
+        except_actions = options[:except] || []
         keep_actions = keep_actions - except_actions
 
         (ACTIONS - keep_actions).uniq.each do |action|
