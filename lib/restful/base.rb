@@ -44,42 +44,51 @@ module Restful
       ##
       # Generic route path helper method to edit a model.
       def edit_resource_path(object)
-        self.send "edit_#{class_name.model_name.singular_route_key}_path",
+        self.send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_path"),
           object
       end
 
       ##
       # Generic route url helper method to edit a model.
       def edit_resource_url(object)
-        self.send "edit_#{class_name.model_name.singular_route_key}_url",
+        self.send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_url"),
           object
       end
 
       ##
       # Generic route path helper method for new model.
       def new_resource_path
-        self.send "new_#{class_name.model_name.singular_route_key}_path"
+        self.send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_path")
       end
 
       ##
       # Generic route url helper method for new model.
       def new_resource_url
-        self.send "new_#{class_name.model_name.singular_route_key}_url"
+        self.send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_url")
       end
 
       ##
       # This is a helper method to get the object collection path.
       def collection_path
-        self.send "#{class_name.model_name.route_key}_path"
+        self.send route_prefix_to_method_name("#{class_name.model_name.route_key}_path")
       end
 
       ##
       # This is a helper method to get the object collection url.
       def collection_url
-        self.send "#{class_name.model_name.route_key}_url"
+        self.send route_prefix_to_method_name("#{class_name.model_name.route_key}_url")
       end
 
       protected
+      ##
+      # Return a url helper method name with additional route prefix if set.
+      # If route_prefix param is set to `admin` then the method name will be:
+      #
+      #   edit_resource_path => admin_edit_resource_path
+      #
+      def route_prefix_to_method_name(method)
+        "#{route_prefix + '_' if route_prefix}#{method}"
+      end
       ##
       # Return the instance variable name for a single object based on the model
       # name defined in the restful macro, example:
@@ -243,7 +252,9 @@ module Restful
       # This macro accepts 3 params:
       #
       # ==== Params
-      # * model: A requires parameter which is a symbol of the model name.
+      # * model: A required parameter which is a symbol of the model name.
+      # * route_prefix: A prefix string to be used with controller's url
+      # helper.
       # * actions: An array of actions that a controller should implement, if
       # none is passed then all seven REST actions are defined.
       #
@@ -261,6 +272,21 @@ module Restful
       # This definition will create the seven REST actions for Document model,
       # this setup a single object instance variable @document and a collection
       # variable @documents.
+      #
+      # Route prefix:
+      #
+      #   class DocumentsController < ApplicationController
+      #     include Restful::Base
+      #     respond_to :html
+      #
+      #     restful model: :document, route_prefix: 'admin'
+      #   end
+      #
+      # With *route_prefix* param every URL helper method in our controller
+      # will have the defined prefix.
+      #
+      # `edit_resource_path` helper method will call internally
+      # `admin_edit_resource_path`.
       #
       # Listed actions variation:
       #
@@ -304,12 +330,13 @@ module Restful
       # include it in your controllers and list the formats do you wish your
       # controller to respond.
       #
-      def restful(model: nil, actions: :all)
-        self.class_attribute :model_name, :class_name,
+      def restful(model: nil, route_prefix: nil, actions: :all)
+        self.class_attribute :model_name, :class_name, :route_prefix,
           instance_writer: false
 
         self.model_name = model
         self.class_name = class_from_name
+        self.route_prefix = route_prefix
 
         include InstanceMethods
         include Restful::Actions

@@ -27,6 +27,7 @@ This macro accepts 2 params:
 
 === Params
 * model: A requires parameter which is a symbol of the model name.
+* route_prefix: A prefix string to be used with controller's url helper.
 * actions: An array of actions that a controller should implement, if none is passed then all seven REST actions are defined.
 
 === Examples
@@ -43,6 +44,19 @@ Simple:
 This definition will create the seven REST actions for Document model,
 this setup a single object instance variable @document and a collection
 variable @documents.
+
+Route prefix:
+
+  class DocumentsController < ApplicationController
+    include Restful::Base
+    respond_to :html
+
+    restful model: :document, route_prefix: 'admin'
+  end
+
+With *route_prefix* param every URL helper method in our controller will have the defined prefix.
+
+`edit_resource_path` helper method will call internally `admin_edit_resource_path`.
 
 Listed actions variation:
 
