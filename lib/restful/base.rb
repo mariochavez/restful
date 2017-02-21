@@ -343,9 +343,12 @@ module Restful
 
         setup_actions actions unless actions == :all
 
-        helper_method :collection, :resource, :resource_class,
-          :edit_resource_path, :edit_resource_url, :new_resource_path,
-          :new_resource_url, :collection_path, :collection_url
+        if respond_to?(:helper_method)
+          helper_method :collection, :resource, :resource_class,
+            :edit_resource_path, :edit_resource_url, :new_resource_path,
+            :new_resource_url, :collection_path, :collection_url
+
+        end
       end
 
       protected
