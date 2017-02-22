@@ -5,7 +5,7 @@ class BlocksController < BaseController
   restful model: :document
 
   def create
-    create! do |success|
+    create! do |success, failure|
       success.html { redirect_to root_path }
     end
   end

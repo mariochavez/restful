@@ -5,7 +5,7 @@ describe CustomNoticesController do
 
   context 'flash messages' do
     it 'has a notice' do
-      post :create, valid_params
+      post "/custom_notices", params: valid_params
 
       flash[:notice].must_equal 'A new document was created'
       must_redirect_to root_path
@@ -13,7 +13,7 @@ describe CustomNoticesController do
 
     it 'has an alert' do
       params = valid_params.merge id: 100
-      put :update, params
+      put "/custom_notices/100", params: params
 
       flash[:alert].must_equal 'There are some errors'
       must_redirect_to root_path

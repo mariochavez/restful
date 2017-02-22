@@ -2,8 +2,9 @@
 # This module allow to add common tests for a REST controller,
 # allowing to eliminate test repetitions
 module BaseActions
-  def test_base_actions(model: nil, with_id: nil, for_params: {}) # rubocop:disable MethodLength, LineLength
+  def test_base_actions(base_url: nil, model: nil, with_id: nil, for_params: {}) # rubocop:disable MethodLength, LineLength
     self.class_eval do
+      let(:base_url) { base_url }
       let(:resource) { model }
       let(:resources) { model.to_s.pluralize.to_sym }
       let(:id) { with_id }
@@ -12,52 +13,44 @@ module BaseActions
       context 'base actions' do
         context 'index' do
           it 'render list' do
-            get :index
+            get base_url
 
             must_respond_with :success
-            must_render_template :index
-            assigns[resources].wont_be_nil
           end
         end
 
         context 'new' do
           it 'render form' do
-            get :new
+            get "#{base_url}/new"
 
             must_respond_with :success
-            must_render_template :new
-            assigns[resource].wont_be_nil
           end
         end
 
         context 'create' do
           it 'redirects' do
-            post :create, valid_params
+            post "#{base_url}", params: valid_params
 
             must_redirect_to documents_path
           end
 
           it 'display errors' do
             invalid_params = generate_invalid_params
-            post :create, invalid_params
+            post "#{base_url}", params: invalid_params
 
             must_respond_with :success
-            must_render_template :new
-            assigns[resource].wont_be_nil
           end
         end
 
         context 'edit' do
           it 'render form' do
-            get :edit, id: id
+            get "#{base_url}/#{id}/edit"
 
             must_respond_with :success
-            must_render_template :edit
-            assigns[resource].wont_be_nil
           end
 
           it 'raise exception on not found' do
-            proc { get :edit, id: 1 }
+            proc { get "#{base_url}/1/edit" }
             .must_raise ActiveRecord::RecordNotFound
           end
         end
@@ -65,7 +58,7 @@ module BaseActions
         context 'update' do
           it 'redirects' do
             params = valid_params.merge id: id
-            put :update, params
+            put "#{base_url}/#{id}", params: params
 
             must_redirect_to documents_path
           end
@@ -73,43 +66,39 @@ module BaseActions
           it 'display errors' do
             invalid_params = generate_invalid_params
             invalid_params.merge! id: id
-            put :update, invalid_params
+            put "#{base_url}/#{id}", params: invalid_params
 
             must_respond_with :success
-            must_render_template :edit
-            assigns[resource].wont_be_nil
           end
 
           it 'raise exception on not found' do
-            proc { put :update, id: 1 }
+            proc { put "#{base_url}/1" }
               .must_raise ActiveRecord::RecordNotFound
           end
         end
 
         context 'show' do
           it 'render view' do
-            get :show, id: id
+            get "#{base_url}/#{id}"
 
             must_respond_with :success
-            must_render_template :show
-            assigns[resource].wont_be_nil
           end
 
           it 'raise exception on not found' do
-            proc { get :show, id: 1 }
+            proc { get "#{base_url}/1" }
               .must_raise ActiveRecord::RecordNotFound
           end
         end
 
         context 'destroy' do
           it 'redirects' do
-            delete :destroy, id: id
+            delete "#{base_url}/#{id}"
 
             must_redirect_to documents_path
           end
 
           it 'raise exception on not found' do
-            proc { delete :destroy, id: 1 }
+            proc { delete "#{base_url}/1" }
               .must_raise ActiveRecord::RecordNotFound
           end
         end
