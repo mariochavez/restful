@@ -14,3 +14,8 @@ gemspec
 # gem 'debugger'
 
 gem "responders", "~> 2.3"
+
+group :development, :test do
+  gem 'sqlite3'
+  gem 'minitest-rails'
+end
