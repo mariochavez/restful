@@ -5,15 +5,15 @@ Dummy::Application.routes.draw do
   resources :blocks, only: [:create, :update]
 
   namespace :admin do
-    get '/new' => 'prefix#new', as: :new_document
-    get '/:id' => 'prefix#show', as: :document
+    get "/new" => "prefix#new", :as => :new_document
+    get "/:id" => "prefix#show", :as => :document
 
-    get '/:id/edit' => 'prefix#edit', as: :edit_document
+    get "/:id/edit" => "prefix#edit", :as => :edit_document
 
-    get '/' => 'prefix#index', as: :documents
-    post '/' => 'prefix#create'
-    put '/' => 'prefix#update'
+    get "/" => "prefix#index", :as => :documents
+    post "/" => "prefix#create"
+    put "/" => "prefix#update"
   end
 
-  root 'home#index'
+  root "home#index"
 end

@@ -31,7 +31,7 @@ module Restful
       # restful macro.
       def collection
         get_collection_ivar || begin
-        set_collection_ivar class_name.all
+          set_collection_ivar class_name.all
         end
       end
 
@@ -44,42 +44,43 @@ module Restful
       ##
       # Generic route path helper method to edit a model.
       def edit_resource_path(object)
-        self.send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_path"),
+        send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_path"),
           object
       end
 
       ##
       # Generic route url helper method to edit a model.
       def edit_resource_url(object)
-        self.send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_url"),
+        send route_prefix_to_method_name("edit_#{class_name.model_name.singular_route_key}_url"),
           object
       end
 
       ##
       # Generic route path helper method for new model.
       def new_resource_path
-        self.send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_path")
+        send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_path")
       end
 
       ##
       # Generic route url helper method for new model.
       def new_resource_url
-        self.send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_url")
+        send route_prefix_to_method_name("new_#{class_name.model_name.singular_route_key}_url")
       end
 
       ##
       # This is a helper method to get the object collection path.
       def collection_path
-        self.send route_prefix_to_method_name("#{class_name.model_name.route_key}_path")
+        send route_prefix_to_method_name("#{class_name.model_name.route_key}_path")
       end
 
       ##
       # This is a helper method to get the object collection url.
       def collection_url
-        self.send route_prefix_to_method_name("#{class_name.model_name.route_key}_url")
+        send route_prefix_to_method_name("#{class_name.model_name.route_key}_url")
       end
 
       protected
+
       ##
       # Return a url helper method name with additional route prefix if set.
       # If route_prefix param is set to `admin` then the method name will be:
@@ -87,8 +88,9 @@ module Restful
       #   edit_resource_path => admin_edit_resource_path
       #
       def route_prefix_to_method_name(method)
-        "#{route_prefix + '_' if route_prefix}#{method}"
+        "#{route_prefix + "_" if route_prefix}#{method}"
       end
+
       ##
       # Return the instance variable name for a single object based on the model
       # name defined in the restful macro, example:
@@ -109,7 +111,7 @@ module Restful
 
       ##
       # Get the object from a single object instance variable.
-      def get_resource_ivar
+      def get_resource_ivar # rubocop:disable Naming/AccessorMethodName
         instance_variable_get resource_ivar
       end
 
@@ -118,13 +120,13 @@ module Restful
       #
       # ==== Params
       # * object: The object to be stored in the instance variable.
-      def set_resource_ivar(object)
+      def set_resource_ivar(object) # rubocop:disable Naming/AccessorMethodName
         instance_variable_set resource_ivar, object
       end
 
       ##
       # Get the collection of objects from an instance variable.
-      def get_collection_ivar
+      def get_collection_ivar # rubocop:disable Naming/AccessorMethodName
         instance_variable_get collection_ivar
       end
 
@@ -134,7 +136,7 @@ module Restful
       # ==== Params
       # * objects: The objects collections to be stored in the instance
       # variable.
-      def set_collection_ivar(objects)
+      def set_collection_ivar(objects) # rubocop:disable Naming/AccessorMethodName
         instance_variable_set collection_ivar, objects
       end
 
@@ -143,7 +145,7 @@ module Restful
       # a new object.
       def build_resource
         get_resource_ivar || begin
-        set_resource_ivar class_name.new
+          set_resource_ivar class_name.new
         end
       end
 
@@ -167,16 +169,16 @@ module Restful
       #
       # If no template method is implemented in the controller then
       # a NotImplementedError exception is raised.
-      def get_secure_params
+      def get_secure_params # rubocop:disable Naming/AccessorMethodName
         params_method = "#{action_name}_secure_params".to_sym
 
         filterd_params =
-          (send(params_method) if self.respond_to?(params_method, true)) ||
-          (send(:secure_params)if self.respond_to?(:secure_params, true))
+          (send(params_method) if respond_to?(params_method, true)) ||
+          (send(:secure_params) if respond_to?(:secure_params, true))
 
         unless filterd_params
           raise NotImplementedError,
-            'You need to define template methods for strong params'
+            "You need to define template methods for strong params"
         end
 
         filterd_params
@@ -201,10 +203,10 @@ module Restful
             end
           end
         when 1
-          respond_with *args, &block
+          respond_with(*args, &block)
         else
           options[:location] = block.call if block
-          respond_with *args
+          respond_with(*args)
         end
       end
 
@@ -212,10 +214,10 @@ module Restful
       # This method set the flash messages if they are passed within the action
       # ==== Params
       # * options: a hash with :notice or :alert messages
-      def set_flash(options = {})
-        if options.has_key?(:notice)
+      def set_flash(options = {}) # rubocop:disable Naming/AccessorMethodName
+        if options.key?(:notice)
           flash[:notice] = options[:notice]
-        elsif options.has_key?(:alert)
+        elsif options.key?(:alert)
           flash[:alert] = options[:alert]
         end
       end
@@ -233,11 +235,10 @@ module Restful
       def find_and_update_resource
         model = class_name.find(params[:id])
         model.tap do |m|
-          m.update_attributes get_secure_params
+          m.update get_secure_params
           set_resource_ivar m
         end
       end
-
     end
 
     ##
@@ -331,7 +332,7 @@ module Restful
       # controller to respond.
       #
       def restful(model: nil, route_prefix: nil, actions: :all)
-        self.class_attribute :model_name, :class_name, :route_prefix,
+        class_attribute :model_name, :class_name, :route_prefix,
           instance_writer: false
 
         self.model_name = model
@@ -352,6 +353,7 @@ module Restful
       end
 
       protected
+
       ##
       # Method that calculates the actions to which our controller should
       # respond to.
@@ -364,7 +366,7 @@ module Restful
 
         options = actions.extract_options!
         except_actions = options[:except] || []
-        keep_actions = keep_actions - except_actions
+        keep_actions -= except_actions
 
         (ACTIONS - keep_actions).uniq.each do |action|
           undef_method action.to_sym, "#{action.to_sym}!"
@@ -374,12 +376,12 @@ module Restful
       ##
       # Method that gets the model class name from the passed symbol.
       def class_from_name
-        if model_name.to_s.include? '_'
-          ns, *klass = model_name.to_s.split('_').collect(&:camelize)
+        if model_name.to_s.include? "_"
+          ns, *klass = model_name.to_s.split("_").collect(&:camelize)
           begin
-            "#{ns}::#{klass.join('')}".constantize
+            "#{ns}::#{klass.join("")}".constantize
           rescue NameError
-            "#{ns}#{klass.join('')}".constantize
+            "#{ns}#{klass.join("")}".constantize
           end
         else
           model_name.to_s.camelize.constantize

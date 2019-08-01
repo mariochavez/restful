@@ -70,9 +70,9 @@ module Restful
     # The instance variable name is a pluralization of the model name defined
     # in the restful macro.
     def index(options = {}, &block)
-      respond_with(collection, options,  &block) if stale?(collection, last_modified: collection.maximum(:updated_at))
+      respond_with(collection, options, &block) if stale?(collection, last_modified: collection.maximum(:updated_at))
     end
-    alias_method :index!, :index
+    alias index! index
 
     ##
     # new action, creates a new object and sets an instance variable which can
@@ -81,7 +81,7 @@ module Restful
     def new(options = {}, &block)
       respond_with(build_resource, options, &block)
     end
-    alias_method :new!, :new
+    alias new! new
 
     ##
     # create action, creates a new object off the received params and sets an
@@ -99,7 +99,7 @@ module Restful
 
       respond_with_dual(object, options, &block)
     end
-    alias_method :create!, :create
+    alias create! create
 
     ##
     # edit action, finds an object based on the passed id, if no object is
@@ -115,7 +115,7 @@ module Restful
 
       respond_with(object, options, &block)
     end
-    alias_method :edit!, :edit
+    alias edit! edit
 
     ##
     # update action, finds an object based on the passed id, if no object is
@@ -135,7 +135,7 @@ module Restful
 
       respond_with_dual(object, options, &block)
     end
-    alias_method :update!, :update
+    alias update! update
 
     ##
     # show action, finds an object based on the passed id, if no object is
@@ -147,7 +147,7 @@ module Restful
 
       respond_with(object, options, &block) if stale?(object)
     end
-    alias_method :show!, :show
+    alias show! show
 
     ##
     # destroy action, finds an object based on the passed id, if no object is
@@ -161,7 +161,7 @@ module Restful
 
       respond_with(object, options, &block)
     end
-    alias_method :destroy!, :destroy
+    alias destroy! destroy
 
     protected :index!, :new!, :create!, :edit!, :update!, :show!, :destroy!
   end

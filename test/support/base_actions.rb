@@ -1,119 +1,121 @@
 ##
 # This module allow to add common tests for a REST controller,
-# allowing to eliminate test repetitions
+# allowing to eliminate test repetdefions
 module BaseActions
   def test_base_actions(base_url: nil, model: nil, with_id: nil, for_params: {}) # rubocop:disable MethodLength, LineLength
-    self.class_eval do
-      let(:base_url) { base_url }
-      let(:resource) { model }
-      let(:resources) { model.to_s.pluralize.to_sym }
-      let(:id) { with_id }
-      let(:valid_params) { for_params }
+    @@base_url = base_url
+    @@for_params = for_params
+    @@with_id = with_id
+    @@model = model
 
-      context 'base actions' do
-        context 'index' do
-          it 'render list' do
-            get base_url
-
-            must_respond_with :success
-          end
-        end
-
-        context 'new' do
-          it 'render form' do
-            get "#{base_url}/new"
-
-            must_respond_with :success
-          end
-        end
-
-        context 'create' do
-          it 'redirects' do
-            post "#{base_url}", params: valid_params
-
-            must_redirect_to documents_path
-          end
-
-          it 'display errors' do
-            invalid_params = generate_invalid_params
-            post "#{base_url}", params: invalid_params
-
-            must_respond_with :success
-          end
-        end
-
-        context 'edit' do
-          it 'render form' do
-            get "#{base_url}/#{id}/edit"
-
-            must_respond_with :success
-          end
-
-          it 'raise exception on not found' do
-            proc { get "#{base_url}/1/edit" }
-            .must_raise ActiveRecord::RecordNotFound
-          end
-        end
-
-        context 'update' do
-          it 'redirects' do
-            params = valid_params.merge id: id
-            put "#{base_url}/#{id}", params: params
-
-            must_redirect_to documents_path
-          end
-
-          it 'display errors' do
-            invalid_params = generate_invalid_params
-            invalid_params.merge! id: id
-            put "#{base_url}/#{id}", params: invalid_params
-
-            must_respond_with :success
-          end
-
-          it 'raise exception on not found' do
-            proc { put "#{base_url}/1" }
-              .must_raise ActiveRecord::RecordNotFound
-          end
-        end
-
-        context 'show' do
-          it 'render view' do
-            get "#{base_url}/#{id}"
-
-            must_respond_with :success
-          end
-
-          it 'raise exception on not found' do
-            proc { get "#{base_url}/1" }
-              .must_raise ActiveRecord::RecordNotFound
-          end
-        end
-
-        context 'destroy' do
-          it 'redirects' do
-            delete "#{base_url}/#{id}"
-
-            must_redirect_to documents_path
-          end
-
-          it 'raise exception on not found' do
-            proc { delete "#{base_url}/1" }
-              .must_raise ActiveRecord::RecordNotFound
-          end
-        end
-
-        def generate_invalid_params # rubocop:disable EmptyLineBetweenDefs
-          invalid_params = valid_params.deep_dup
-          invalid_params.keys.each do |top_key|
-            invalid_params[top_key].keys.each do |key|
-              invalid_params[top_key][key] = ''
-            end
-          end
-          invalid_params
-        end
-        protected :generate_invalid_params
+    class_eval do
+      def resource
+        @@model
       end
+
+      def resources
+        resource.to_s.pluralize.to_sym
+      end
+
+      def id
+        @@with_id
+      end
+
+      def valid_params
+        @@for_params
+      end
+
+      def url
+        @@base_url
+      end
+
+      def test_render_list
+        get url
+
+        assert_response :success
+      end
+
+      def test_render_form_when_new
+        get "#{url}/new"
+
+        assert_response :success
+      end
+
+      def test_redirects_when_created
+        post url, params: valid_params
+
+        assert_redirected_to documents_path
+      end
+
+      def test_display_errors_when_new_invalid
+        invalid_params = generate_invalid_params
+        post url, params: invalid_params
+
+        assert_response :success
+      end
+
+      def test_render_form_when_edit
+        get "#{url}/#{id}/edit"
+
+        assert_response :success
+      end
+
+      def test_raise_exception_on_edit_not_found
+        assert_raises(ActiveRecord::RecordNotFound) { get "#{url}/1/edit" }
+      end
+
+      def test_redirects_when_updated
+        params = valid_params.merge id: id
+        put "#{url}/#{id}", params: params
+
+        assert_redirected_to documents_path
+      end
+
+      def test_display_errors_when_edit_invalid
+        invalid_params = generate_invalid_params
+        invalid_params[:id] = id
+        put "#{url}/#{id}", params: invalid_params
+
+        assert_response :success
+      end
+
+      def test_raise_exception_on_updated_not_found
+        assert_raises(ActiveRecord::RecordNotFound) { put "#{url}/1" }
+      end
+
+      def test_render_show
+        get "#{url}/#{id}"
+
+        assert_response :success
+      end
+
+      def raise_exception_on_show_not_found
+        assert_raises(ActiveRecord::RecordNotFound) { get "#{url}/1" }
+      end
+
+      def test_redirects_when_deleted
+        delete "#{url}/#{id}"
+
+        assert_redirected_to documents_path
+      end
+
+      def raise_exception_on_deleted_not_found
+        assert_raises(ActiveRecord::RecordNotFound) { delete "#{url}/1" }
+      end
+
+      def generate_invalid_params
+        invalid_params = valid_params.deep_dup
+
+        invalid_params.keys.each do |top_key|
+          invalid_params[top_key].keys.each do |key|
+            invalid_params[top_key][key] = ""
+          end
+        end
+
+        invalid_params
+      end
+
+      protected :generate_invalid_params
     end
   end
 end

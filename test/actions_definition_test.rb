@@ -1,124 +1,112 @@
-require 'test_helper'
+require "test_helper"
 
-describe 'Actions definition' do
-  it 'have all REST actions when no action is defined' do
-    ##
-    # Controller class for tests
-    class AllDefaultActionsController < BaseController
-      respond_to :html
-      restful model: :document
-    end
+class ActionsDefindefionTest < ActiveSupport::TestCase
+  class AllDefaultActionsController < BaseController
+    respond_to :html
+    restful model: :document
+  end
 
+  class AllExplicdefActionsController < BaseController
+    respond_to :html
+    restful model: :document, actions: :all
+  end
+
+  class ExceptActionsController < BaseController
+    respond_to :html
+    restful model: :document,
+            actions: [:all,
+                      except: [:eddef, :update, :destroy],]
+  end
+
+  class HandPickWdefhExceptionActionsController < BaseController
+    respond_to :html
+    restful model: :document,
+            actions: [:index, :show, :destroy,
+                      except: [:eddef, :update, :destroy],]
+  end
+
+  class HandPickActionsController < BaseController
+    respond_to :html
+    restful model: :document,
+            actions: [:index, :show, :destroy]
+  end
+
+  class InvalidActionsController < BaseController
+    respond_to :html
+    restful model: :document,
+            actions: [:indice, :show, :eliminar,
+                      except: [:eddef, :actualizar, :destroy],]
+  end
+
+  def test_have_all_rest_actions_when_no_action_is_defined
     subject = AllDefaultActionsController.new
 
-    subject.must_respond_to :index
-    subject.must_respond_to :show
-    subject.must_respond_to :edit
-    subject.must_respond_to :update
-    subject.must_respond_to :new
-    subject.must_respond_to :create
-    subject.must_respond_to :destroy
+    assert_respond_to subject, :index
+    assert_respond_to subject, :show
+    refute_respond_to subject, :eddef
+    assert_respond_to subject, :update
+    assert_respond_to subject, :new
+    assert_respond_to subject, :create
+    assert_respond_to subject, :destroy
   end
 
-  it 'have all REST actions when all actions are defined' do
-    ##
-    # Controller class for tests
-    class AllExplicitActionsController < BaseController
-      respond_to :html
-      restful model: :document, actions: :all
-    end
+  def test_have_all_rest_actions_when_all_actions_are_defined
+    subject = AllExplicdefActionsController.new
 
-    subject = AllExplicitActionsController.new
-
-    subject.must_respond_to :index
-    subject.must_respond_to :show
-    subject.must_respond_to :edit
-    subject.must_respond_to :update
-    subject.must_respond_to :new
-    subject.must_respond_to :create
-    subject.must_respond_to :destroy
+    assert_respond_to subject, :index
+    assert_respond_to subject, :show
+    refute_respond_to subject, :eddef
+    assert_respond_to subject, :update
+    assert_respond_to subject, :new
+    assert_respond_to subject, :create
+    assert_respond_to subject, :destroy
   end
 
-  it 'have all but except actions' do
-    ##
-    # Controller class for tests
-    class ExceptActionsController < BaseController
-      respond_to :html
-      restful model: :document,
-        actions: [:all,
-                   except: [:edit, :update, :destroy]]
-    end
-
+  def test_have_all_but_except_actions
     subject = ExceptActionsController.new
 
-    subject.must_respond_to :index
-    subject.must_respond_to :show
-    subject.wont_respond_to :edit
-    subject.wont_respond_to :update
-    subject.must_respond_to :new
-    subject.must_respond_to :create
-    subject.wont_respond_to :destroy
+    assert_respond_to subject, :index
+    assert_respond_to subject, :show
+    refute_respond_to subject, :eddef
+    refute_respond_to subject, :update
+    assert_respond_to subject, :new
+    assert_respond_to subject, :create
+    refute_respond_to subject, :destroy
   end
 
-  it 'have listed actions but except actions' do
-    ##
-    # Controller class for tests
-    class HandPickWithExceptionActionsController < BaseController
-      respond_to :html
-      restful model: :document,
-        actions: [:index, :show, :destroy,
-                  except: [:edit, :update, :destroy]]
-    end
+  def test_have_listed_actions_but_except_actions
+    subject = HandPickWdefhExceptionActionsController.new
 
-    subject = HandPickWithExceptionActionsController.new
-
-    subject.must_respond_to :index
-    subject.must_respond_to :show
-    subject.wont_respond_to :edit
-    subject.wont_respond_to :update
-    subject.wont_respond_to :new
-    subject.wont_respond_to :create
-    subject.wont_respond_to :destroy
+    assert_respond_to subject, :index
+    assert_respond_to subject, :show
+    refute_respond_to subject, :eddef
+    refute_respond_to subject, :update
+    refute_respond_to subject, :new
+    refute_respond_to subject, :create
+    refute_respond_to subject, :destroy
   end
 
-  it 'have listed actions' do
-    ##
-    # Controller class for tests
-    class HandPickActionsController < BaseController
-      respond_to :html
-      restful model: :document,
-        actions: [:index, :show, :destroy]
-    end
-
+  def test_have_listed_actions
     subject = HandPickActionsController.new
 
-    subject.must_respond_to :index
-    subject.must_respond_to :show
-    subject.must_respond_to :destroy
-    subject.wont_respond_to :edit
-    subject.wont_respond_to :update
-    subject.wont_respond_to :new
-    subject.wont_respond_to :create
+    assert_respond_to subject, :index
+    assert_respond_to subject, :show
+    assert_respond_to subject, :destroy
+    refute_respond_to subject, :eddef
+    refute_respond_to subject, :update
+    refute_respond_to subject, :new
+    refute_respond_to subject, :create
   end
 
-  it 'have invalid actions listed' do
-    ##
-    # Controller class for tests
-    class InvalidActionsController < BaseController
-      respond_to :html
-      restful model: :document,
-        actions: [:indice, :show, :eliminar,
-                  except: [:edit, :actualizar, :destroy]]
-    end
-
+  def test_have_invalid_actions_listed
     subject = InvalidActionsController.new
 
-    subject.wont_respond_to :index
-    subject.must_respond_to :show
-    subject.wont_respond_to :edit
-    subject.wont_respond_to :update
-    subject.wont_respond_to :new
-    subject.wont_respond_to :create
-    subject.wont_respond_to :destroy
+    refute_respond_to subject, :index
+    assert_respond_to subject, :show
+    refute_respond_to subject, :eddef
+    refute_respond_to subject, :update
+    refute_respond_to subject, :new
+    refute_respond_to subject, :create
+    refute_respond_to subject, :destroy
   end
 end

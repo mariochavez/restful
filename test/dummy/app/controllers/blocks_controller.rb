@@ -18,6 +18,7 @@ class BlocksController < BaseController
   end
 
   protected
+
   def create_secure_params
     params.require(:document).permit :name
   end
