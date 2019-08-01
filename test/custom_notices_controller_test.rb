@@ -1,22 +1,22 @@
-require 'test_helper'
+require "test_helper"
 
-describe CustomNoticesController do
-  let(:valid_params) { { document: { name: 'Sample' } } }
+class CustomNoticesTest < ActionDispatch::IntegrationTest
+  def valid_params
+    {document: {name: "Sample"}}
+  end
 
-  context 'flash messages' do
-    it 'has a notice' do
-      post "/custom_notices", params: valid_params
+  def test_has_a_notice
+    post "/custom_notices", params: valid_params
 
-      flash[:notice].must_equal 'A new document was created'
-      must_redirect_to root_path
-    end
+    assert_equal "A new document was created", flash[:notice]
+    assert_redirected_to root_path
+  end
 
-    it 'has an alert' do
-      params = valid_params.merge id: 100
-      put "/custom_notices/100", params: params
+  def test_has_an_alert
+    params = valid_params.merge id: 100
+    put "/custom_notices/100", params: params
 
-      flash[:alert].must_equal 'There are some errors'
-      must_redirect_to root_path
-    end
+    assert_equal "There are some errors", flash[:alert]
+    assert_redirected_to root_path
   end
 end

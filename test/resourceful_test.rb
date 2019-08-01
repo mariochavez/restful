@@ -1,8 +1,7 @@
-require 'test_helper'
+require "test_helper"
 
-describe Restful do
-  it 'is a module' do
-    Restful.must_be_kind_of Module
+class RestfulTest < ActiveSupport::TestCase
+  def test_is_a_module
+    assert_kind_of Module, Restful
   end
 end
-

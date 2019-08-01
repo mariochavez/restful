@@ -1,43 +1,41 @@
-require 'test_helper'
+require "test_helper"
 
-describe 'Route prefixes' do
+class Admin::PrefixControllerTest < ActiveSupport::TestCase
+  def subject
+    controller = Admin::PrefixController.new
 
-  describe Admin::PrefixController do
-    subject {
-      controller = Admin::PrefixController.new
+    request = ActionDispatch::TestRequest.create
+    request.host = "www.example.org"
+    controller.request = request
 
-      request = ActionController::TestRequest.create
-      request.host = "www.example.org"
-      controller.request = request
-      controller
-    }
-
-    let(:model) { Document.new.tap{|document| document.id = 1} }
-
-    it 'respond to edit path helper' do
-      subject.edit_resource_path(model).must_match(/^\/admin\//)
-    end
-
-    it 'respond to edit url helper' do
-      subject.edit_resource_url(model).must_match(/\.org\/admin\//)
-    end
-
-    it 'respond to new path helper' do
-      subject.new_resource_path.must_match(/^\/admin\//)
-    end
-
-    it 'respond to new url helper' do
-      subject.new_resource_url.must_match(/\.org\/admin\//)
-    end
-
-    it 'respond to collection path helper' do
-      subject.collection_path.must_match(/^\/admin/)
-    end
-
-    it 'respond to collection url helper' do
-      subject.collection_url.must_match(/\.org\/admin/)
-    end
+    controller
   end
 
+  def model
+    Document.new.tap { |document| document.id = 1 }
+  end
 
+  def test_respond_to_edit_path_helper
+    assert_match(/^\/admin\//, subject.edit_resource_path(model))
+  end
+
+  def test_respond_to_edit_url_helper
+    assert_match(/\.org\/admin\//, subject.edit_resource_url(model))
+  end
+
+  def test_respond_to_new_path_helper
+    assert_match(/^\/admin\//, subject.new_resource_path)
+  end
+
+  def test_respond_to_new_url_helper
+    assert_match(/\.org\/admin\//, subject.new_resource_url)
+  end
+
+  def test_respond_to_collection_path_helper
+    assert_match(/^\/admin/, subject.collection_path)
+  end
+
+  def test_respond_to_collection_url_helper
+    assert_match(/\.org\/admin/, subject.collection_url)
+  end
 end

@@ -1,28 +1,30 @@
-require 'test_helper'
+require "test_helper"
 
-describe BlocksController do
-  let(:valid_params) { { document: { name: 'Sample' } } }
+class BlocksTest < ActionDispatch::IntegrationTest
+  def valid_params
+    {document: {name: "Sample"}}
+  end
 
- it 'has one response block' do
-   post "/blocks", params: valid_params
+  def test_has_one_response_block
+    post "/blocks", params: valid_params
 
-   must_redirect_to root_path
- end
+    assert_redirected_to root_path
+  end
 
- it 'has two response blocks with success' do
-   params = valid_params.merge id: 100
-   post "/blocks", params: params
+  def test_has_two_response_blocks_with_success
+    params = valid_params.merge id: 100
+    post "/blocks", params: params
 
-   must_redirect_to root_path
- end
+    assert_redirected_to root_path
+  end
 
- it 'has two response blocks with failire' do
-   params = valid_params.merge(id: 100).tap do |p|
-     p[:document][:name] = ''
-   end
+  def test_has_two_response_blocks_with_failire
+    params = valid_params.merge(id: 100).tap do |p|
+      p[:document][:name] = ""
+    end
 
-   post "/blocks", params: params
+    post "/blocks", params: params
 
-   must_respond_with :success
- end
+    assert_response :success
+  end
 end

@@ -13,9 +13,9 @@ gemspec
 # To use debugger
 # gem 'debugger'
 
-gem "responders", "~> 2.3"
+gem "responders", "~> 3.0"
 
 group :development, :test do
-  gem 'sqlite3'
-  gem 'minitest-rails'
+  gem "sqlite3"
+  gem "byebug"
 end

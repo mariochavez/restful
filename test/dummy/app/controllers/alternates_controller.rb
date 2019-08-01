@@ -43,6 +43,7 @@ class AlternatesController < BaseController
   end
 
   protected
+
   def secure_params
     params.require(:document).permit :name
   end

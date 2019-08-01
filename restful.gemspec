@@ -7,9 +7,9 @@ require "restful/version"
 Gem::Specification.new do |s|
   s.name        = "restful_controller"
   s.version     = Restful::VERSION
-  s.authors     = ["Mario Alberto Chavez"]
+  s.authors     = ["Mario Alberto Chávez"]
   s.email       = ["mario.chavez@gmail.com"]
-  s.homepage    = "http://blog.decisionesinteligentes.com"
+  s.homepage    = "https://mariochavez.io"
   s.summary     = "Restful helps to keep Controllers DRY, removing repetitive code from basic REST actions."
   s.description = "Restful helps you to remove duplicated code from controllers were their REST actions are pretty standard and repetitive."
   s.license     = "MIT"
@@ -17,11 +17,8 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "rails", "~> 5.0.0"
+  s.add_dependency "rails", "~> 6.0.0.rc2"
 
   s.add_development_dependency "sqlite3"
-  s.add_development_dependency "rubocop"
-  s.add_development_dependency "flog"
-  s.add_development_dependency "flay"
-  s.add_development_dependency "minitest-rails"
+  s.add_development_dependency "standard"
 end

@@ -4,8 +4,14 @@ module Restful
   # Since there is no action need it from it, it just implements
   # a method_missing for responder that needs to be ignored.
   class DummyResponder
-    def method_missing(args) #:nodoc:
+    # rubocop:disable Style/MethodMissingSuper
+    def method_missing(args) # :nodoc:
       nil
+    end
+    # rubocop:enable Style/MethodMissingSuper
+
+    def respond_to_missing?(name, include_private) # :nodoc:
+      true
     end
   end
 end

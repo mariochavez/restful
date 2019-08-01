@@ -1,30 +1,23 @@
 # Configure Rails Environment
-ENV['RAILS_ENV'] = 'test'
+ENV["RAILS_ENV"] = "test"
 
-require File.expand_path('../dummy/config/environment.rb',  __FILE__)
-require 'rails/test_help'
-require 'minitest/rails'
+require File.expand_path("../dummy/config/environment.rb", __FILE__)
+ActiveRecord::Migrator.migrations_paths = File.expand_path("../dummy/db/migrate", __FILE__)
+require "rails/test_help"
 
-Rails.backtrace_cleaner.remove_silencers!
+Minitest.backtrace_filter = Minitest::BacktraceFilter.new
 
 # Load support files
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 # Load fixtures from the engine
 if ActiveSupport::TestCase.method_defined?(:fixture_path=)
-  ActiveSupport::TestCase.fixture_path =
-    File.expand_path('../fixtures', __FILE__)
+  ActiveSupport::TestCase.fixture_path = File.expand_path("../fixtures", __FILE__)
+  ActionDispatch::IntegrationTest.fixture_path = ActiveSupport::TestCase.fixture_path
+  ActiveSupport::TestCase.file_fixture_path = ActiveSupport::TestCase.fixture_path + "/files"
+  ActiveSupport::TestCase.fixtures :all
 end
 
-##
-# Base class for Tests
 class ActiveSupport::TestCase
-  migrations_path = File.expand_path('../dummy/db/migrate', __FILE__)
-  ActiveRecord::Migrator.migrate migrations_path
-
   fixtures :all
-
-  class << self
-    alias_method :context, :describe
-  end
 end

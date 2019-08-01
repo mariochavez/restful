@@ -5,14 +5,15 @@ class CustomNoticesController < BaseController
   restful model: :document
 
   def create
-    create!(notice: 'A new document was created') { root_url }
+    create!(notice: "A new document was created") { root_url }
   end
 
   def update
-    update!(alert: 'There are some errors') { root_url }
+    update!(alert: "There are some errors") { root_url }
   end
 
   protected
+
   def secure_params
     params.require(:document).permit :name
   end
